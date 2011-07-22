@@ -1,5 +1,12 @@
 !!!5
 
 %head
+  %script{:type => "text/javascript", :src => "javascripts/jquery.js"}
+  %script{:type => "text/javascript", :src => "javascripts/paper.js"}
+  -#%script{:type => "text/javascript", :src => "javascripts/app.js"}
+
 
 %body
+  #canvas
+    %script{:type => "text/paperscript", :canvas => "canvas-1", :src => "javascripts/paint.js"} 
+    %canvas#canvas-1{:resize => "true", :width => "1001", :height => "419"}

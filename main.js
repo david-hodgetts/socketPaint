@@ -1,11 +1,11 @@
-var static = require('node-static'),
+var nodeStatic = require('node-static'),
     PORT = 8080;
 
 //
 // Create a node-static server instance to serve the './public' folder
 //
 
-var fileServer = new static.Server('./public');
+var fileServer = new nodeStatic.Server('./public');
 
 require('http').createServer(function(request, response){
 
