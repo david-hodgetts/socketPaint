@@ -6,7 +6,6 @@ var nodeStatic = require('node-static'),
     httpServer,
     io;
 
-//
 // Create a node-static server instance to serve the './public' folder
 //
 
@@ -26,7 +25,6 @@ httpServer = http.createServer(function(request, response){
 
     });
   });
-
 });
 
 httpServer.listen(PORT);
@@ -34,11 +32,29 @@ httpServer.listen(PORT);
 // socket init
 io = socketIo.listen(httpServer);
 
+
 io.sockets.on('connection', function(socket){
-  socket.on('user_message', function(msg){
-    console.log("we got msg" + msg["my"]);
+
+  var sessionId = socket.id;
+
+  socket.emit('welcome', {id: sessionId});
+
+  socket.on('user_new_path', function(msg){
+    socket.broadcast.emit('new_path', { point: msg.point });
   });
 
+
+  socket.on('user_add_point_to_path', function(msg){
+    socket.broadcast.emit('add_point_to_path',{ point: msg.point });
+  });
+
+  socket.on('user_end_path', function(msg){
+    socket.broadcast.emit('end_path', { point: msg.point });
+  });
+
+  socket.on('disconnect', function(){
+    socket.emit('user disconnected');
+  });
 });
 
 console.log("http listening on " + PORT);

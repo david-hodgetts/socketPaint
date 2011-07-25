@@ -10,12 +10,6 @@
 %body
   #canvas
     
-    :javascript
-      $(document).ready(function(){
-        var socket = io.connect('http://localhost'); 
-        var emit = function() {console.log("emit"); socket.emit("user_message", {my: 'data'}) };
-        setInterval(emit, 3000); 
-      });
 
     %script{:type => "text/paperscript", :canvas => "canvas-1", :src => "javascripts/paint.js"} 
     %canvas#canvas-1{:resize => "true", :width => "1001", :height => "419"}

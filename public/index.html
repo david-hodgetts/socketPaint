@@ -6,15 +6,6 @@
 </head>
 <body>
   <div id='canvas'>
-    <script type='text/javascript'>
-      //<![CDATA[
-        $(document).ready(function(){
-          var socket = io.connect('http://localhost'); 
-          var emit = function() {console.log("emit"); socket.emit("user_message", {my: 'data'}) };
-          setInterval(emit, 3000); 
-        });
-      //]]>
-    </script>
     <script canvas='canvas-1' src='javascripts/paint.js' type='text/paperscript'></script>
     <canvas height='419' id='canvas-1' resize='true' width='1001'></canvas>
   </div>
