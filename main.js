@@ -1,13 +1,18 @@
 var nodeStatic = require('node-static'),
-    PORT = 8080;
+    http = require('http'),
+    socketIo = require('socket.io'),
+    PORT = 8080,
+    fileServer,
+    httpServer,
+    io;
 
 //
 // Create a node-static server instance to serve the './public' folder
 //
 
-var fileServer = new nodeStatic.Server('./public');
+fileServer = new nodeStatic.Server('./public');
 
-require('http').createServer(function(request, response){
+httpServer = http.createServer(function(request, response){
 
   request.addListener('end', function(){
     fileServer.serve(request, response, function(e, res){
@@ -22,6 +27,18 @@ require('http').createServer(function(request, response){
     });
   });
 
-}).listen(PORT);
+});
 
-console.log("listening on " + PORT);
+httpServer.listen(PORT);
+
+// socket init
+io = socketIo.listen(httpServer);
+
+io.sockets.on('connection', function(socket){
+  socket.on('user_message', function(msg){
+    console.log("we got msg" + msg["my"]);
+  });
+
+});
+
+console.log("http listening on " + PORT);
