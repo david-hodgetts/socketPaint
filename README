@@ -1,0 +1,15 @@
+this is a simple and naive test of Paper.js and Socket.io integration
+
+the node app "main.js" serves a simple page with a multi user adaptation of 
+the following Paper.js Tutorial example 
+-> http://paperjs.org/tutorials/geometry/vector-geometry/
+
+to start serving the test page -> "node main.js"
+
+node requirements:
+
+npm install node-static
+npm install socket.io
+
+ruby dependencies (optional):
+haml for generating the index.html file

@@ -9,7 +9,7 @@ var socket = io.connect(),
 
 var toPoint = function(nodePoint){
   return new Point(nodePoint.x, nodePoint.y);
-}
+};
 
 // returns a path object from hash_of_paths 
 var getPath = function(remoteId){
@@ -19,7 +19,7 @@ var getPath = function(remoteId){
   }
 
   return hash_of_paths[remoteId];
-}
+};
 
 //returns a new path object and stores it hash_of_paths
 var newPath = function(remoteId) {
@@ -30,7 +30,7 @@ var newPath = function(remoteId) {
   hash_of_paths[remoteId] = new Path();
 
   return hash_of_paths[remoteId];
-}
+};
 
 
 
