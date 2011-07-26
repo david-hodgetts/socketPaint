@@ -1,10 +1,8 @@
 var socket = io.connect(), 
-    id,
     server_path,
     hash_of_paths = {};
 
-tool.minDistance = 10;
-tool.maxDistance = 45;
+
 
 ////////////////////////////////
 // util functions
@@ -13,7 +11,7 @@ var toPoint = function(nodePoint){
   return new Point(nodePoint.x, nodePoint.y);
 }
 
-
+// returns a path object from hash_of_paths 
 var getPath = function(remoteId){
 
   if (! hash_of_paths.hasOwnProperty(remoteId)){
@@ -23,7 +21,7 @@ var getPath = function(remoteId){
   return hash_of_paths[remoteId];
 }
 
-
+//returns a new path object and stores it hash_of_paths
 var newPath = function(remoteId) {
   if (hash_of_paths.hasOwnProperty(remoteId)){
     throw new Error("can't create new path -> key already exists");
@@ -34,13 +32,13 @@ var newPath = function(remoteId) {
   return hash_of_paths[remoteId];
 }
 
+
+
+
+
+
 //////////////////////
 // remote callbacks
-
-socket.on('welcome', function(data){
-  id = data.id;
-  console.log('we are id ' + id);
-});
 
 
 // NEW_PATH from remote
@@ -51,8 +49,6 @@ socket.on('new_path', function(data){
 
   server_path.fillColor = new HSBColor(Math.random() * 360, 1, 1);
   server_path.add(data.point);
-  
-  console.log('new path ' + data.point.x);
 });
 
 
@@ -63,12 +59,18 @@ socket.on('add_point_to_path', function(data){
     
   server_path = getPath(data.id); 
 
-  var point = toPoint(data.point),
-      secondPoint = point + 20;
-  server_path.add(point);
-  server_path.insert(0, secondPoint);
+  var delta = toPoint(data.delta),
+      step = delta / 2;
+
+  step.angle += 90;
+
+  var middlePoint = toPoint(data.middlePoint),
+      top = middlePoint + step,
+      bottom = middlePoint - step;
+
+  server_path.add(top);
+  server_path.insert(0, bottom);
   server_path.smooth();
-  console.log('add point to path');
 });
 
 
@@ -86,8 +88,6 @@ socket.on('end_path', function(data){
 
   // remove path
   delete hash_of_paths[data.id];
-
-  console.log('end path');
 });
 
 
@@ -95,6 +95,9 @@ socket.on('end_path', function(data){
 // local drawing
 
 var localPath;
+
+tool.minDistance = 10;
+tool.maxDistance = 45;
 
 function onFrame(event){
 // unused 
@@ -106,8 +109,6 @@ function onMouseDown(event) {
   localPath.fillColor = new HSBColor(Math.random() * 360, 1, 1);
 
   localPath.add(event.point);
-
-  console.log(event);
 
   socket.emit('user_new_path', {point: event.point});
 }
@@ -123,7 +124,8 @@ function onMouseDrag(event) {
   localPath.insert(0, bottom);
   localPath.smooth();
 
-  socket.emit('user_add_point_to_path', {point: event.point});
+  socket.emit('user_add_point_to_path', {delta: event.delta,
+                                         middlePoint: event.middlePoint});
 }
 
 function onMouseUp(event) {

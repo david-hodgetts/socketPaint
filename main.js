@@ -7,7 +7,6 @@ var nodeStatic = require('node-static'),
     io;
 
 // Create a node-static server instance to serve the './public' folder
-//
 
 fileServer = new nodeStatic.Server('./public');
 
@@ -37,7 +36,7 @@ io.sockets.on('connection', function(socket){
 
   var sessionId = socket.id;
 
-  socket.emit('welcome', {id: sessionId});
+  socket.emit('welcome', {id: sessionId}); //unused
 
   socket.on('user_new_path', function(msg){
     socket.broadcast.emit('new_path', { point: msg.point, 
@@ -46,7 +45,8 @@ io.sockets.on('connection', function(socket){
 
 
   socket.on('user_add_point_to_path', function(msg){
-    socket.broadcast.emit('add_point_to_path',{ point: msg.point,
+    socket.broadcast.emit('add_point_to_path',{ delta: msg.delta,
+                                                middlePoint: msg.middlePoint,
                                                 id: sessionId });
   });
 
